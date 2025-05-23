@@ -8,7 +8,7 @@
 ## Running the App
 
 ```
-cd voting-app
+cd voting-dapp
 yarn dev
 ````
 
