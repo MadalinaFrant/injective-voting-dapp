@@ -1,1 +1,1 @@
-d9f0142efa991323dac46e4e765dacad6e6666eacbf7500232d2901f53e68f7a  voting_app.wasm
+b44e4b32d6c2afe9cf71cf7e811ab39506bd7d5f3dfb5e8038426719fe74b47a  voting_app.wasm

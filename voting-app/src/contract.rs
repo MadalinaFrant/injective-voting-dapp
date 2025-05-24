@@ -54,9 +54,9 @@ pub mod execute {
     pub fn vote(deps: DepsMut, info: MessageInfo, candidate: String) -> Result<Response, ContractError> {
         STATE.update(deps.storage, |mut state| -> Result<_, ContractError> {
 
-            // Check if the sender is eligible to vote (if they have a token named "eligible_to_vote")
-            if !info.funds.iter().any(|coin| coin.denom == "eligible_to_vote") {
-                return Err(ContractError::Unauthorized {});
+            // Check if the candidate is valid
+            if !state.votes.contains_key(&candidate) {
+                return Err(ContractError::InvalidCandidate {});
             }
 
             // Check if the sender has already voted
@@ -64,9 +64,9 @@ pub mod execute {
                 return Err(ContractError::AlreadyVoted {});
             }
 
-            // Check if the candidate is valid
-            if !state.votes.contains_key(&candidate) {
-                return Err(ContractError::InvalidCandidate {});
+            // Check if the sender is eligible to vote (if they have a token named "eligible_to_vote")
+            if !info.funds.iter().any(|coin| coin.denom.ends_with("/eligible_to_vote")) {
+                return Err(ContractError::Unauthorized {});
             }
 
             // Increment the vote for the candidate

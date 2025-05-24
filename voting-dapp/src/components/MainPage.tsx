@@ -50,7 +50,7 @@ const MainPage = (props: Props) => {
 
           {/* Voting */}
           <div className='flex flex-col items-center'>
-            <p className='text-2xl'>Vote for your preffered candidate</p>
+            <p className='text-2xl'>Vote for your preferred candidate</p>
             <div className='flex flex-col items-center w-full'>
               {renderCandidates()}
             </div>

@@ -33,19 +33,50 @@ export const getVotes = async (): Promise<Record<string, number>> => {
 export const submitVote = async (candidate: string): Promise<void> => {
     const { injectiveAddress, connectWallet } = useWalletStore.getState();
 
-    const msg = MsgExecuteContractCompat.fromJSON({
-        sender: injectiveAddress,
-        contractAddress: SC_ADDRESS,
-        msg: {
-            vote: {
-                candidate: candidate,
-            },
-        },
-    });
+    try {
 
-    await msgBroadcastClient.broadcast({
-        msgs: msg,
-        injectiveAddress: injectiveAddress,
-    });
+        const msg = MsgExecuteContractCompat.fromJSON({
+            sender: injectiveAddress,
+            contractAddress: SC_ADDRESS,
+            msg: {
+                vote: {
+                    candidate: candidate,
+                },
+            },
+            funds: [
+                {
+                    denom: `factory/${injectiveAddress}/eligible_to_vote`,
+                    amount: "1",
+                },
+            ]
+        });
+
+        await msgBroadcastClient.broadcast({
+            msgs: msg,
+            injectiveAddress: injectiveAddress,
+        });
+
+    } catch (error: any) {
+        console.error("Error submitting vote:", error);
+
+        if (!error.message.includes("You do not have enough funds")) {
+            throw error;
+        }
+
+        const msg = MsgExecuteContractCompat.fromJSON({
+            sender: injectiveAddress,
+            contractAddress: SC_ADDRESS,
+            msg: {
+                vote: {
+                    candidate: candidate,
+                },
+            }
+        });
+
+        await msgBroadcastClient.broadcast({
+            msgs: msg,
+            injectiveAddress: injectiveAddress,
+        });
+    }
 };
 
